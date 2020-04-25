@@ -1,4 +1,4 @@
-# Fabric Example Mod
+# Old animations 1.8.9
 
 ## Setup
 

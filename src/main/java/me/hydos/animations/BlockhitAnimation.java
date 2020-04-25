@@ -78,12 +78,19 @@ package me.hydos.animations;
 import me.hydos.animations.util.FieldWrapper;
 
 import java.util.List;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -124,6 +131,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
@@ -136,6 +144,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
+@Environment(EnvType.CLIENT)
 public class BlockhitAnimation {
     private static final FieldWrapper<Float> prevEquippedProgress = new FieldWrapper<>(Animations.isObfuscated ? "field_78451_d" : "prevEquippedProgress", ItemRenderer.class);
     private static final FieldWrapper<Float> equippedProgress = new FieldWrapper<>(Animations.isObfuscated ? "field_78454_c" : "equippedProgress", ItemRenderer.class);
@@ -145,19 +154,18 @@ public class BlockhitAnimation {
     private static final FieldWrapper<ItemModelMesher> modelMesher = new FieldWrapper<>(Animations.isObfuscated ? "field_175059_m" : "itemModelMesher", RenderItem.class);
     private int farPlaneDistance;
     private ItemStack itemToRender;
-    private final Minecraft mc = Minecraft.getMinecraft();
-    private final GameSettings gameSettings;
+    private final MinecraftClient mc = MinecraftClient.getInstance();
+    private final GameOptions gameSettings;
     private EntityRenderer entityRenderer;
     private ItemRenderer itemRenderer;
     private RenderManager renderManager;
     private ItemModelMesher itemModelMesher;
     private boolean isOF;
     private boolean init;
-    private KeyBinding zoom;
-    private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    private static final Identifier RES_ITEM_GLINT = new Identifier("textures/misc/enchanted_item_glint.png");
 
     public BlockhitAnimation() {
-        this.gameSettings = this.mc.gameSettings;
+        this.gameSettings = this.mc.options;
         this.isOF = false;
         this.init = false;
     }
@@ -170,7 +178,6 @@ public class BlockhitAnimation {
                 if (!keyBinding.getKeyDescription().equals("Zoom") && !keyBinding.getKeyDescription().equals("of.key.zoom"))
                     continue;
                 this.isOF = true;
-                this.zoom = keyBinding;
                 System.out.println("Found Zoom key");
                 break;
             }
@@ -184,23 +191,22 @@ public class BlockhitAnimation {
     }
 
     private boolean isZoomed() {
-        if (!this.isOF) return false;
-        return this.zoom.isKeyDown();
+        return false;
     }
 
-    @SubscribeEvent
-    public void onRenderFirstHand(RenderHandEvent e) {
-        this.init();
-        if (this.isZoomed()) return;
-        if (e.isCanceled()) return;
-        if (this.mc.thePlayer.getHeldItem() == null) {
-            return;
-        }
-        e.setCanceled(true);
-        this.attemptSwing();
-        this.renderHand(e.partialTicks, e.renderPass);
-        this.renderWorldDirections(e.partialTicks);
-    }
+//    @SubscribeEvent
+//    public void onRenderFirstHand(RenderHandEvent e) {
+//        this.init();
+//        if (this.isZoomed()) return;
+//        if (e.isCanceled()) return;
+//        if (this.mc.thePlayer.getHeldItem() == null) {
+//            return;
+//        }
+//        e.setCanceled(true);
+//        this.attemptSwing();
+//        this.renderHand(e.partialTicks, e.renderPass);
+//        this.renderWorldDirections(e.partialTicks);
+//    }
 
     private void renderHand(float partialTicks, int renderPass) {
         boolean flag;

@@ -1,7 +1,5 @@
 package me.hydos.animations;
 
-import me.hydos.animations.proxy.CommonProxy;
-
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -21,23 +21,26 @@
 package me.hydos.animations.util;
 
 import me.hydos.animations.Animations;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(value=Side.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CustomLayerBipedArmor
-extends LayerArmorBase<ModelBiped> {
+extends class_1183<ModelBiped> {
     private RendererLivingEntity<?> rendererIn;
-    private static final FieldWrapper<RendererLivingEntity<?>> renderer = new FieldWrapper(Animations.isObfuscated ? "field_177190_a" : "renderer", LayerArmorBase.class);
+    private static final FieldWrapper<LivingEntity<?>> renderer = new FieldWrapper(Animations.isObfuscated ? "field_177190_a" : "renderer", LayerArmorBase.class);
 
     public CustomLayerBipedArmor(RendererLivingEntity<?> rendererIn) {
         super(rendererIn);
